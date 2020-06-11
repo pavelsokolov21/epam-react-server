@@ -1,7 +1,7 @@
 const { parceToLineStr } = require("./parceToLineStr");
 
 const filterFilms = (films, category, subStr) => {
-  if (subStr.length === 1) {
+  if (subStr.length === 0) {
     return films;
   }
 
