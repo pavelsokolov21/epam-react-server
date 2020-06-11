@@ -16,17 +16,18 @@ router.get("/", (req, res) => {
       const { 
         searchBy = "title",
         sortBy = "rating",
-        search = "" 
+        search = "",
+        filter = "",
       } = req.query;
       const { data } = JSON.parse(filmsData);
-      let films;
-
-      if (search.length === 0) {
-        films = sortFilms(data, sortDescriptors(sortBy));
+      let filteredFilms;
+      if (filter.length === 0) {
+        filteredFilms = filterFilms(data, searchBy, search);
       } else {
-        const filteredFilms = filterFilms(data, searchBy, search);
-        films = sortFilms(filteredFilms, sortDescriptors(sortBy));
+        filteredFilms = filterFilms(data, searchBy, filter);
       }
+
+      const films = sortFilms(filteredFilms, sortDescriptors(sortBy));
       
       res.status(200).json(films);
     });
