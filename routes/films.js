@@ -1,4 +1,5 @@
 const fs = require("fs");
+const util = require("util");
 const { Router } = require("express");
 const router = Router();
 
@@ -7,20 +8,20 @@ const { filterFilms } = require("../utils/filterFilms");
 const { sortFilms } = require("../utils/sortFilms");
 const { sortDescriptors } = require("../utils/sortDescriptors");
 
-router.get("/", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+router.get("/", async (req, res) => {
   try {
-    fs.readFile( getPathToData(), "utf-8", (err, filmsData) => {
-      if (err) throw err;
-
+    const readFile = util.promisify(fs.readFile);
+    await readFile(getPathToData(), "utf-8").then((filmsData) => {
       const { 
         searchBy = "title",
         sortBy = "rating",
         search = "",
         filter = "",
       } = req.query;
+
       const { data } = JSON.parse(filmsData);
       let filteredFilms;
+
       if (filter.length === 0) {
         filteredFilms = filterFilms(data, searchBy, search);
       } else {
@@ -38,12 +39,11 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+router.get("/:id", async (req, res) => {
   try {
-    fs.readFile( getPathToData(), "utf-8", (err, filmsData) => {
-      if (err) throw err;
+    const readFile = util.promisify(fs.readFile);
 
+    await readFile(getPathToData(), "utf-8").then((filmsData) => {
       const id = +req.params.id;
       const { data } = JSON.parse(filmsData);
       const film = data.find((film) => film.id === id);
