@@ -8,20 +8,27 @@ module.exports = {
     searchBy = "title",
     sortBy = "rating",
     search = "",
-    filter = "",
   }) {
     try {
       const allFilms = await Film.find();
-      let filteredFilms;
+      let filteredFilms = filterFilms(allFilms, searchBy, search);
 
-      if (filter.length === 0) {
-        filteredFilms = filterFilms(allFilms, searchBy, search);
-      } else {
-        filteredFilms = filterFilms(allFilms, "genres", filter);
-      }
       return sortFilms(filteredFilms, sortDescriptors(sortBy));
     } catch (e) {
       throw new Error("Server error!!!");
+    }
+  },
+
+  async getFilmsByFilter({
+    filter = "",
+  }) {
+    try {
+      const films = await Film.find();
+      const filteredFilms = filterFilms(films, "genres", filter);
+
+      return sortFilms(filteredFilms, sortDescriptors("rating"));
+    } catch (e) {
+      throw new Error(e.message);
     }
   },
 
@@ -36,5 +43,6 @@ module.exports = {
     } catch (e) {
       throw new Error("Server error!!!");
     }
-  }
+  },
+
 }

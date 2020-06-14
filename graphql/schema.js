@@ -21,8 +21,8 @@ module.exports = buildSchema(`
       searchBy: String
       sortBy: String
       search: String
-      filter: String
     ): [Film!]!
     getFilm(id: ID!): Film!
+    getFilmsByFilter(filter: String): [Film!]!
   }
 `);
