@@ -1,7 +1,4 @@
-const fs = require("fs");
-const util = require("util");
-
-const { getPathToData } = require("../utils/getPathToData");
+const Film = require("../models/film");
 const { filterFilms } = require("../utils/filterFilms");
 const { sortFilms } = require("../utils/sortFilms");
 const { sortDescriptors } = require("../utils/sortDescriptors");
@@ -14,21 +11,15 @@ module.exports = {
     filter = "",
   }) {
     try {
-      let sortedFilms;
-      const readFile = util.promisify(fs.readFile);
-      await readFile(getPathToData(), "utf-8").then((filmsData) => {
-        const { data } = JSON.parse(filmsData);
-        let filteredFilms;
-        if (filter.length === 0) {
-          filteredFilms = filterFilms(data, searchBy, search);
-        } else {
-          filteredFilms = filterFilms(data, "genres", filter);
-        }
+      const allFilms = await Film.find();
+      let filteredFilms;
 
-        sortedFilms = sortFilms(filteredFilms, sortDescriptors(sortBy));
-      });
-      
-      return sortedFilms;
+      if (filter.length === 0) {
+        filteredFilms = filterFilms(allFilms, searchBy, search);
+      } else {
+        filteredFilms = filterFilms(allFilms, "genres", filter);
+      }
+      return sortFilms(filteredFilms, sortDescriptors(sortBy));
     } catch (e) {
       throw new Error("Server error!!!");
     }
@@ -36,18 +27,12 @@ module.exports = {
 
   async getFilm({ id }) {
     try {
-      const readFile = util.promisify(fs.readFile);
-      let film;
-      await readFile(getPathToData(), "utf-8").then((filmsData) => {
-        const { data } = JSON.parse(filmsData);
-        film = data.find((film) => film.id === +id);
+      const filmById = await Film.findById(id);
+      if (filmById === undefined) {
+        throw new Error("Can't found film :(");
+      }
 
-        if (film === undefined) {
-          throw new Error("Can't found film :(");
-        }
-      });
-      
-      return film;
+      return filmById;
     } catch (e) {
       throw new Error("Server error!!!");
     }

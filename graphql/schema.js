@@ -2,7 +2,7 @@ const { buildSchema } = require("graphql");
 
 module.exports = buildSchema(`
   type Film {
-    id: Int!
+    id: String!
     title: String!
     tagline: String!
     vote_average: Float!

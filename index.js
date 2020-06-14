@@ -1,7 +1,9 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const graphqlHTTP = require("express-graphql");
 const app = express();
 const cors = require("cors");
+const keys = require("./keys/index");
 
 const PORT = process.env.PORT || 8080;
 const schema = require("./graphql/schema");
@@ -16,6 +18,20 @@ app.use(graphqlHTTP({
   graphiql: true,
 }));
 
-app.listen(PORT, () => {
-  console.log("Sever is running");
-});
+async function start() {
+  try {
+    await mongoose.connect(keys.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false
+    });
+
+    app.listen(PORT, () => {
+      console.log("Sever is running");
+    });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+start();
