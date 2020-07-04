@@ -17,12 +17,12 @@ module.exports = buildSchema(`
   }
 
   type Query {
-    getFilms(
+    films(
       searchBy: String
       sortBy: String
       search: String
     ): [Film!]!
-    getFilm(id: ID!): Film!
-    getFilmsByFilter(filter: String): [Film!]!
+    film(id: ID!): Film!
+    filmsByFilter(filter: String): [Film!]!
   }
 `);

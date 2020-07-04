@@ -4,7 +4,7 @@ const { sortFilms } = require("../utils/sortFilms");
 const { sortDescriptors } = require("../utils/sortDescriptors");
 
 module.exports = {
-  async getFilms({
+  async films({
     searchBy = "title",
     sortBy = "rating",
     search = "",
@@ -19,7 +19,7 @@ module.exports = {
     }
   },
 
-  async getFilmsByFilter({
+  async filmsByFilter({
     filter = "",
   }) {
     try {
@@ -32,7 +32,7 @@ module.exports = {
     }
   },
 
-  async getFilm({ id }) {
+  async film({ id }) {
     try {
       const filmById = await Film.findById(id);
       if (filmById === undefined) {
